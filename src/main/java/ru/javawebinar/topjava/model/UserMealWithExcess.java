@@ -9,9 +9,9 @@ public class UserMealWithExcess {
 
     private final int calories;
 
-    private final CaloriesPerDay caloriesPerDay;
+    private final GroupMealsPerDay caloriesPerDay;
 
-    public UserMealWithExcess(LocalDateTime dateTime, String description, int calories, CaloriesPerDay caloriesPerDay) {
+    public UserMealWithExcess(LocalDateTime dateTime, String description, int calories, GroupMealsPerDay caloriesPerDay) {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;

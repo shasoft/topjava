@@ -77,7 +77,7 @@ public class UserMealsUtil {
                                 .filter(meal ->
                                         TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime)
                                 )
-                                .map((UserMeal meal) -> new UserMealWithExcess(
+                                .map(meal -> new UserMealWithExcess(
                                                 meal.getDateTime(),
                                                 meal.getDescription(),
                                                 meal.getCalories(),

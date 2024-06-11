@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.util;
 
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExcess;
-import ru.javawebinar.topjava.model.GroupMealsPerDay;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,27 +30,31 @@ public class UserMealsUtil {
     public static List<UserMealWithExcess> filteredByCycles(
             List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int limitCaloriesPerDay
     ) {
-        // Список отфильтрованных элементов
-        List<UserMealWithExcess> userMealsWithExcess = new ArrayList<>();
-        // Группировка по дням
-        Map<LocalDate, GroupMealsPerDay> groupsMealsPerDay = new HashMap<>();
-        //
-        meals.forEach((UserMeal meal) -> {
-            // Получим объект группировки еды за день
-            GroupMealsPerDay groupMealsPerDay = groupsMealsPerDay.computeIfAbsent(
-                    meal.getDateTime().toLocalDate(),
-                    day -> new GroupMealsPerDay(limitCaloriesPerDay)
+        // Суммируем калории по каждому дню
+        Map<LocalDate, Integer> sumCaloriesPerDay = new HashMap<>();
+        meals.forEach(meal -> {
+            LocalDate day = meal.getDateTime().toLocalDate();
+            sumCaloriesPerDay.put(
+                    day,
+                    sumCaloriesPerDay.getOrDefault(day, 0) + meal.getCalories()
             );
-            // Добавим текущую еду
-            groupMealsPerDay.add(meal);
+        });
+        // Список отфильтрованных элементов для возврата из метода
+        List<UserMealWithExcess> userMealsWithExcess = new ArrayList<>();
+        meals.forEach((UserMeal meal) -> {
             // Проверим попадание элемента в границы временного интервала
             if (TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime)) {
+                // Определим: в течение дня было превышение лимита калорий?
+                boolean excess = sumCaloriesPerDay.get(
+                        meal.getDateTime().toLocalDate()
+                ) > limitCaloriesPerDay;
+                // Добавить в итоговый список
                 userMealsWithExcess.add(
                         new UserMealWithExcess(
                                 meal.getDateTime(),
                                 meal.getDescription(),
                                 meal.getCalories(),
-                                groupMealsPerDay)
+                                excess)
                 );
             }
         });
@@ -59,32 +62,27 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExcess> filteredByStreams(
-            List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay
+            List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int limitCaloriesPerDay
     ) {
+        // Суммируем калории по каждому дню
+        Map<LocalDate, Integer> sumCaloriesPerDay = meals.stream()
+                .collect(
+                        Collectors.groupingBy(
+                                // Группируем по дню
+                                meal -> meal.getDateTime().toLocalDate(),
+                                // Суммируем калории за день
+                                Collectors.summingInt(UserMeal::getCalories)
+                        )
+                );
+
         return meals.stream()
-                // Группируем по дате
-                .collect(Collectors.groupingBy(meal -> meal.getDateTime().toLocalDate()))
-                .values()
-                .stream()
-                // Создаем для каждого дня свою группу со списком еды
-                .map(mealsPerDay -> new GroupMealsPerDay(caloriesPerDay, mealsPerDay))
-                // Каждую группу по дням превратим в единый список
-                .flatMap(groupMealsPerDay ->
-                        groupMealsPerDay.geMeals()
-                                .stream()
-                                // Отфильтруем единый список по условию
-                                .filter(meal ->
-                                        TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime)
-                                )
-                                .map((UserMeal meal) -> new UserMealWithExcess(
-                                                meal.getDateTime(),
-                                                meal.getDescription(),
-                                                meal.getCalories(),
-                                                groupMealsPerDay
-                                        )
-                                )
-                )
-                // Преобразуем поток в список
+                .filter(meal -> TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime))
+                .map(meal -> new UserMealWithExcess(
+                        meal.getDateTime(),
+                        meal.getDescription(),
+                        meal.getCalories(),
+                        sumCaloriesPerDay.getOrDefault(meal.getDateTime().toLocalDate(), 0) > limitCaloriesPerDay
+                ))
                 .collect(Collectors.toList());
     }
 }

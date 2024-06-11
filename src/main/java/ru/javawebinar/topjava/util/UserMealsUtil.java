@@ -36,7 +36,7 @@ public class UserMealsUtil {
         // Группировка по дням
         Map<LocalDate, GroupMealsPerDay> groupsMealsPerDay = new HashMap<>();
         //
-        meals.forEach((UserMeal meal) -> {
+        meals.forEach(meal -> {
             // Получим объект группировки еды за день
             GroupMealsPerDay groupMealsPerDay = groupsMealsPerDay.computeIfAbsent(
                     meal.getDateTime().toLocalDate(),
@@ -46,6 +46,7 @@ public class UserMealsUtil {
             groupMealsPerDay.add(meal);
             // Проверим попадание элемента в границы временного интервала
             if (TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime)) {
+                // Добавим еду в результирующий список
                 userMealsWithExcess.add(
                         new UserMealWithExcess(
                                 meal.getDateTime(),

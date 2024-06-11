@@ -27,7 +27,7 @@ public class GroupMealsPerDay {
     }
 
     public boolean getExcess() {
-        return this.value <= this.limit;
+        return this.value > this.limit;
     }
 
     public List<UserMeal> geMeals() {

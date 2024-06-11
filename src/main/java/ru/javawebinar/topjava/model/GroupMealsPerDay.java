@@ -6,8 +6,7 @@ import java.util.List;
 public class GroupMealsPerDay {
     private final int limit;
     private int value;
-
-    final private List<UserMeal> meals;
+    private final List<UserMeal> meals;
 
     public GroupMealsPerDay(int limit) {
         this.limit = limit;

@@ -1,34 +1,147 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
-import ru.javawebinar.topjava.Config;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
+import ru.javawebinar.topjava.storage.MealStorage;
+import ru.javawebinar.topjava.storage.MealStorageMemory;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.TimeUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
+    private static MealStorageMemory storage = null;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.debug("redirect to meals");
+        final String path = this.getRoutePath(request);
+
+        log.debug("doGet {}", path);
+
+        switch (path) {
+            case "/": {
+                this.doPageList(request, response);
+            }
+            break;
+            case "/edit": {
+                this.doPageEdit(request, response, false);
+            }
+            break;
+            case "/delete": {
+                this.doPageDelete(request, response);
+            }
+            break;
+            default:
+                response.setStatus(404);
+        }
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        final String path = this.getRoutePath(request);
+
+        log.debug("doPost {}", path);
+
+        switch (path) {
+            case "/edit": {
+                this.doPageEdit(request, response, true);
+            }
+            default:
+                response.setStatus(404);
+        }
+    }
+
+    private void doPageList(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+        log.debug("doPageList");
 
         final List<MealTo> mealTos = MealsUtil.filteredByStreams(
-                Config.get().getStorage().getAll(),
+                getStorage().getAll(),
                 LocalTime.MIN, LocalTime.MAX,
-                Config.get().caloriesPerDay
+                MealsUtil.getMaxCaloriesPerDay()
         );
         request.setAttribute("meals", mealTos);
-        request.setAttribute("dateTimeFormatter", Config.get().getDateTimeFormatter());
+        request.setAttribute("dateTimeFormatter", TimeUtil.getDatetimeFormat());
         request.getRequestDispatcher("/meals.jsp").forward(request, response);
+    }
+
+    private void doPageEdit(HttpServletRequest request, HttpServletResponse response, boolean hasPost) throws ServletException,
+            IOException {
+        log.debug("doPageEdit {}", hasPost);
+        if (hasPost) {
+            Meal meal = new Meal(
+                    Integer.parseInt(request.getParameter("id")),
+                    LocalDateTime.parse(request.getParameter("dateTime")),
+                    request.getParameter("description"),
+                    Integer.parseInt(request.getParameter("calories"))
+            );
+            log.debug("meal {}", meal);
+            if (meal.getId() == 0) {
+                getStorage().create(meal);
+            } else {
+                getStorage().update(meal);
+            }
+            response.sendRedirect(request.getContextPath() + "/meals");
+        } else {
+            Meal meal = this.getMeal(request);
+            log.debug("meal {}", meal);
+            if (meal == null) {
+                meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 0);
+            }
+            request.setAttribute("meal", meal);
+            request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
+        }
+    }
+
+    private void doPageDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+        log.debug("doPageDelete");
+        Meal meal = this.getMeal(request);
+        log.debug("meal {}", meal);
+        if (meal != null) {
+            getStorage().delete(meal.getId());
+            response.sendRedirect(request.getContextPath() + "/meals");
+        } else {
+            response.setStatus(404);
+        }
+    }
+
+    public static MealStorage getStorage() {
+        if (storage == null) {
+            storage = new MealStorageMemory();
+            storage.create(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500));
+            storage.create(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000));
+            storage.create(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500));
+            storage.create(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100));
+            storage.create(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000));
+            storage.create(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500));
+            storage.create(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410));
+        }
+        return storage;
+    }
+
+    private String getRoutePath(HttpServletRequest request) {
+        return (request.getPathInfo() != null ? request.getPathInfo() : "/").toLowerCase();
+    }
+
+    private Meal getMeal(HttpServletRequest request) {
+        final String id = request.getParameter("id");
+        if (id == null) {
+            return null;
+        }
+        return getStorage().read(Integer.parseInt(id));
     }
 }

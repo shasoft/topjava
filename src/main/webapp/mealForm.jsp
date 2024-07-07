@@ -8,15 +8,15 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <c:choose>
-    <c:when test="${meal==null}">
-        <h2>Добавление еды</h2>
+    <c:when test="${meal.id==0}">
+        <h2>Создание еды</h2>
     </c:when>
     <c:otherwise>
-        <h2>Изменение еды № ${meal.id}</h2>
+        <h2>Изменение еды</h2>
     </c:otherwise>
 </c:choose>
 
-<form action="editMeal" method="post">
+<form method="post">
     <input name="id" type="hidden" value="${meal.id}">
     <div>
         <label for="dateTime">Дата/время:</label>
@@ -29,7 +29,7 @@
     </div>
 
     <div>
-        <label for="calories">Калорииs:</label>
+        <label for="calories">Калории:</label>
         <input id="calories" name="calories" required type="number" value="${meal.calories}">
     </div>
     <hr/>

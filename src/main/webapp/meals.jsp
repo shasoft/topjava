@@ -12,16 +12,13 @@
 <table border="1">
     <caption>Meals (список еды)</caption>
     <tr>
-        <!--<th>№</th>-->
         <th>Дата/время</th>
         <th>Описание</th>
         <th>Калории</th>
         <th colspan="2"></th>
     </tr>
     <c:forEach items="${meals}" var="mealTo">
-
-        <tr style="color:<c:out value="${mealTo.excess ? 'red' : 'green'}" />">
-            <!--<td>${mealTo.id}</td>-->
+        <tr style="color:${mealTo.excess ? 'red' : 'green'}">
             <td>${dateTimeFormatter.format(mealTo.dateTime)}</td>
             <td>${mealTo.description}</td>
             <td>${mealTo.calories}</td>

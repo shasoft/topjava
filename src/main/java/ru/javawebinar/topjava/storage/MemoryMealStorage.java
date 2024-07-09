@@ -8,29 +8,25 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MealStorageMemory implements MealStorage {
-    protected static final AtomicInteger atomicId = new AtomicInteger(0);
-    protected Map<Integer, Meal> storage = new ConcurrentHashMap<>();
+public class MemoryMealStorage implements MealStorage {
+    private final AtomicInteger generatorId = new AtomicInteger(0);
+    final private Map<Integer, Meal> storage = new ConcurrentHashMap<>();
 
     @Override
     public Meal create(Meal meal) {
-        Meal mealAdd = new Meal(atomicId.incrementAndGet(), meal.getDateTime(), meal.getDescription(), meal.getCalories());
+        Meal mealAdd = new Meal(generatorId.incrementAndGet(), meal.getDateTime(), meal.getDescription(), meal.getCalories());
         storage.put(mealAdd.getId(), mealAdd);
         return mealAdd;
     }
 
     @Override
-    public Meal read(int id) {
+    public Meal get(int id) {
         return storage.get(id);
     }
 
     @Override
-    public Meal update(Meal meal) {
-        if (storage.containsKey(meal.getId())) {
-            storage.put(meal.getId(), meal);
-            return meal;
-        }
-        return null;
+    public void update(Meal meal) {
+        storage.replace(meal.getId(), meal);
     }
 
     @Override

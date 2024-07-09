@@ -7,17 +7,9 @@
 <body>
 <h3><a href="index.html">Home</a></h3>
 <hr>
-<c:choose>
-    <c:when test="${meal.id==0}">
-        <h2>Создание еды</h2>
-    </c:when>
-    <c:otherwise>
-        <h2>Изменение еды</h2>
-    </c:otherwise>
-</c:choose>
-
+<h2>${meal.id==null ? 'Создание' : 'Изменение'} еды</h2>
 <form method="post">
-    <input name="id" type="hidden" value="${meal.id}">
+    <c:if test="meal.id!=null"><input name="id" type="hidden" value="${meal.id}"></c:if>
     <div>
         <label for="dateTime">Дата/время:</label>
         <input id="dateTime" name="dateTime" required type="datetime-local" value="${meal.dateTime}">

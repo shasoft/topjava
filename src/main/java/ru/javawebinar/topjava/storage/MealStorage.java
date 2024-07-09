@@ -7,9 +7,9 @@ import java.util.List;
 public interface MealStorage {
     Meal create(Meal meal);
 
-    Meal read(int id);
+    Meal get(int id);
 
-    Meal update(Meal meal);
+    void update(Meal meal);
 
     void delete(int id);
 

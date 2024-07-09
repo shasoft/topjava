@@ -2,7 +2,6 @@ package ru.javawebinar.topjava.util;
 
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
-import ru.javawebinar.topjava.web.MealServlet;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,12 +11,14 @@ import java.util.stream.Collectors;
 
 public class MealsUtil {
     public static void main(String[] args) {
+        /*
         List<Meal> meals = MealServlet.getStorage().getAll();
 
         List<MealTo> mealsTo = filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0),
                 getMaxCaloriesPerDay());
 
         mealsTo.forEach(System.out::println);
+        //*/
     }
 
     public static int getMaxCaloriesPerDay() {

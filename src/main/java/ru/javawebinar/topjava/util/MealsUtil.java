@@ -10,17 +10,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MealsUtil {
-    public static void main(String[] args) {
-        /*
-        List<Meal> meals = MealServlet.getStorage().getAll();
-
-        List<MealTo> mealsTo = filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0),
-                getMaxCaloriesPerDay());
-
-        mealsTo.forEach(System.out::println);
-        //*/
-    }
-
     public static int getMaxCaloriesPerDay() {
         return 2000;
     }

@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
+import ru.javawebinar.topjava.storage.MealStorage;
 import ru.javawebinar.topjava.storage.MemoryMealStorage;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.TimeUtil;
@@ -22,7 +23,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
-    private MemoryMealStorage storage;
+    private MealStorage storage;
 
     @Override
     public void init() throws ServletException {
@@ -48,28 +49,13 @@ public class MealServlet extends HttpServlet {
             }
             break;
             case "/edit": {
-                this.doPageEditGet(request, response);
+                this.gotoEditPage(request, response);
             }
             break;
             case "/delete": {
                 this.doPageDelete(request, response);
             }
             break;
-            default:
-                response.setStatus(404);
-        }
-    }
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        final String path = this.getRoutePath(request);
-
-        log.debug("doPost {}", path);
-
-        switch (path) {
-            case "/edit": {
-                this.doPageEditPost(request, response);
-            }
             default:
                 response.setStatus(404);
         }
@@ -89,9 +75,9 @@ public class MealServlet extends HttpServlet {
         request.getRequestDispatcher("/meals.jsp").forward(request, response);
     }
 
-    private void doPageEditGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+    private void gotoEditPage(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
-        log.debug("doPageEditGet");
+        log.debug("gotoEditPage");
         Meal meal = this.getMeal(request);
         log.debug("meal {}", meal);
         if (meal == null) {
@@ -99,26 +85,6 @@ public class MealServlet extends HttpServlet {
         }
         request.setAttribute("meal", meal);
         request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
-    }
-
-    private void doPageEditPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
-        log.debug("doPageEditPost");
-        final String idParameter = request.getParameter("id");
-        final Integer id = idParameter==null ? null : Integer.parseInt(idParameter);
-        Meal meal = new Meal(
-                id,
-                LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories"))
-        );
-        log.debug("meal {}", meal);
-        if (meal.getId() == null) {
-            storage.create(meal);
-        } else {
-            storage.update(meal);
-        }
-        response.sendRedirect(request.getContextPath() + "/meals");
     }
 
     private void doPageDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException,
@@ -134,8 +100,19 @@ public class MealServlet extends HttpServlet {
         }
     }
 
-    private String getRoutePath(HttpServletRequest request) {
-        return (request.getPathInfo() != null ? request.getPathInfo() : "/").toLowerCase();
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        final String path = this.getRoutePath(request);
+
+        log.debug("doPost {}", path);
+
+        switch (path) {
+            case "/edit": {
+                this.saveMeal(request, response);
+            }
+            default:
+                response.setStatus(404);
+        }
     }
 
     private Meal getMeal(HttpServletRequest request) {
@@ -144,5 +121,30 @@ public class MealServlet extends HttpServlet {
             return null;
         }
         return storage.get(Integer.parseInt(id));
+    }
+
+    private void saveMeal(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+        log.debug("saveMeal");
+        final String idParameter = request.getParameter("id");
+        final Integer id = idParameter == null ? null : Integer.parseInt(idParameter);
+        Meal meal = new Meal(
+                id,
+                LocalDateTime.parse(request.getParameter("dateTime")),
+                request.getParameter("description"),
+                Integer.parseInt(request.getParameter("calories"))
+        );
+        log.debug("meal {}", meal);
+        if (meal.getId() == null) {
+            storage.create(meal);
+        } else {
+            storage.update(meal);
+        }
+        response.sendRedirect(request.getContextPath() + "/meals");
+    }
+
+
+    private String getRoutePath(HttpServletRequest request) {
+        return (request.getPathInfo() != null ? request.getPathInfo() : "/").toLowerCase();
     }
 }

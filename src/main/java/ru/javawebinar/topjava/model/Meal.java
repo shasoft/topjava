@@ -23,7 +23,12 @@ public class Meal {
 
     @Override
     public String toString() {
-        return "Meal{" + "id=" + id + ", dateTime=" + dateTime + ", description='" + description + '\'' + ", calories=" + calories + '}';
+        return "Meal{" +
+                "id=" + id +
+                ", dateTime=" + dateTime +
+                ", description='" + description +
+                ", calories=" + calories
+                + '}';
     }
 
     public Integer getId() {

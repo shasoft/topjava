@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
@@ -43,20 +44,20 @@ public class MealRestController {
 
     public List<MealTo> getFilterAll(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
         log.info("getFilterAll");
-        List<MealTo> meals = this.getAll();
+        Stream<MealTo> streamMeals = this.getAll().stream();
         if (startDate != null) {
-            meals = meals.stream().filter(meal -> meal.getDateTime().toLocalDate().isAfter(startDate)).collect(Collectors.toList());
+            streamMeals.filter(meal -> meal.getDateTime().toLocalDate().isAfter(startDate)).collect(Collectors.toList());
         }
         if (startTime != null) {
-            meals = meals.stream().filter(meal -> meal.getDateTime().toLocalTime().isAfter(startTime)).collect(Collectors.toList());
+            streamMeals.filter(meal -> meal.getDateTime().toLocalTime().isAfter(startTime)).collect(Collectors.toList());
         }
         if (endDate != null) {
-            meals = meals.stream().filter(meal -> meal.getDateTime().toLocalDate().isBefore(endDate)).collect(Collectors.toList());
+            streamMeals.filter(meal -> meal.getDateTime().toLocalDate().isBefore(endDate)).collect(Collectors.toList());
         }
         if (endTime != null) {
-            meals = meals.stream().filter(meal -> meal.getDateTime().toLocalTime().isBefore(endTime)).collect(Collectors.toList());
+            streamMeals.filter(meal -> meal.getDateTime().toLocalTime().isBefore(endTime)).collect(Collectors.toList());
         }
-        return meals;
+        return streamMeals.collect(Collectors.toList());
     }
 
     public void delete(int id) {

@@ -24,10 +24,9 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public synchronized Meal save(Meal meal, int userId) {
+    public Meal save(Meal meal, int userId) {
         log.info("save {} for user {}", meal, userId);
         final Map<Integer, Meal> repository = this.getRepositoryForUser(userId);
-        if (repository == null) return null;
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             repository.put(meal.getId(), meal);
@@ -38,33 +37,30 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public synchronized boolean delete(int id, int userId) {
+    public boolean delete(int id, int userId) {
         log.info("delete {} for user {}", id, userId);
         final Map<Integer, Meal> repository = this.getRepositoryForUser(userId);
-        if (repository == null) return false;
         return repository.remove(id) != null;
     }
 
     @Override
-    public synchronized Meal get(int id, int userId) {
+    public Meal get(int id, int userId) {
         log.info("get {} for user {}", id, userId);
         final Map<Integer, Meal> repository = this.getRepositoryForUser(userId);
-        if (repository == null) return null;
         return repository.get(id);
     }
 
     @Override
-    public synchronized List<Meal> getAll(int userId) {
+    public List<Meal> getAll(int userId) {
         log.info("getAll for user {}", userId);
         final Map<Integer, Meal> repository = this.getRepositoryForUser(userId);
-        if (repository == null) return new ArrayList<>();
         final ArrayList<Meal> all = new ArrayList<>(repository.values());
         all.sort(Comparator.comparing(Meal::getDateTime));
         Collections.reverse(all);
         return all;
     }
 
-    private synchronized Map<Integer, Meal> getRepositoryForUser(int userId) {
+    private Map<Integer, Meal> getRepositoryForUser(int userId) {
         return repository.computeIfAbsent(userId, key -> new ConcurrentHashMap<>());
     }
 }

@@ -39,7 +39,7 @@ public class InMemoryUserRepository implements UserRepository {
             return user;
         }
         // handle case: update, but not present in storage
-        return repository.computeIfPresent(user.getId(), (id, oldMeal) -> user);
+        return repository.computeIfPresent(user.getId(), (id, oldUser) -> user);
     }
 
     @Override
@@ -54,12 +54,29 @@ public class InMemoryUserRepository implements UserRepository {
         log.info("getAll");
         final ArrayList<User> all = new ArrayList<>(repository.values());
         all.sort(Comparator.comparing(User::getName));
+        all.sort((Object user1, Object user2) -> {
+
+            final String name1 = ((User) user1).getName();
+            final String name2 = ((User) user2).getName();
+            int rcCompareName = name1.compareTo(name2);
+
+            if (rcCompareName != 0) {
+                return rcCompareName;
+            }
+
+            final Integer id1 = ((User) user1).getId();
+            final Integer id2 = ((User) user2).getId();
+            return id1.compareTo(id2);
+        });
         return all;
     }
 
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        return repository.values().stream().filter(user -> user.getEmail().equals(email)).findFirst().orElse(null);
+        return repository.values().stream()
+                .filter(user -> user.getEmail().equalsIgnoreCase(email))
+                .findFirst()
+                .orElse(null);
     }
 }

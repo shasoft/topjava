@@ -39,25 +39,23 @@ public class MealRestController {
 
     public List<MealTo> getAll() {
         log.info("getAll");
-        return MealsUtil.getTos(service.getAll(authUserId()), authUserCaloriesPerDay());
+        return getMealTo(service.getAll(authUserId()));
     }
 
-    public List<MealTo> getFilterAll(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
+    public List<MealTo> select(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
         log.info("getFilterAll");
-        Stream<MealTo> streamMeals = this.getAll().stream();
-        if (startDate != null) {
-            streamMeals.filter(meal -> meal.getDateTime().toLocalDate().isAfter(startDate)).collect(Collectors.toList());
-        }
+        Stream<MealTo> streamMeals = getMealTo(service.select(authUserId(), startDate, endDate)).stream();
         if (startTime != null) {
-            streamMeals.filter(meal -> meal.getDateTime().toLocalTime().isAfter(startTime)).collect(Collectors.toList());
-        }
-        if (endDate != null) {
-            streamMeals.filter(meal -> meal.getDateTime().toLocalDate().isBefore(endDate)).collect(Collectors.toList());
+            streamMeals = streamMeals.filter(meal -> meal.getDateTime().toLocalTime().isAfter(startTime));
         }
         if (endTime != null) {
-            streamMeals.filter(meal -> meal.getDateTime().toLocalTime().isBefore(endTime)).collect(Collectors.toList());
+            streamMeals = streamMeals.filter(meal -> meal.getDateTime().toLocalTime().isBefore(endTime));
         }
         return streamMeals.collect(Collectors.toList());
+    }
+
+    private List<MealTo> getMealTo(List<Meal> meals) {
+        return MealsUtil.getTos(meals, authUserCaloriesPerDay());
     }
 
     public void delete(int id) {

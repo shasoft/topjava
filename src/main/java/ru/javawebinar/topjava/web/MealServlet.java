@@ -29,7 +29,7 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
-        final int userId = SecurityUtil.authUserIdOrFail();
+        final int userId = SecurityUtil.authUserId();
         String id = request.getParameter("id");
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                 LocalDateTime.parse(request.getParameter("dateTime")),
@@ -44,7 +44,7 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        final int userId = SecurityUtil.authUserIdOrFail();
+        final int userId = SecurityUtil.authUserId();
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = getId(request);

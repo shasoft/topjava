@@ -12,8 +12,6 @@ import ru.javawebinar.topjava.util.MealsUtil;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
@@ -43,15 +41,13 @@ public class MealRestController {
     }
 
     public List<MealTo> select(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
-        log.info("getFilterAll");
-        Stream<MealTo> streamMeals = getMealTo(service.select(authUserId(), startDate, endDate)).stream();
-        if (startTime != null) {
-            streamMeals = streamMeals.filter(meal -> meal.getDateTime().toLocalTime().isAfter(startTime));
-        }
-        if (endTime != null) {
-            streamMeals = streamMeals.filter(meal -> meal.getDateTime().toLocalTime().isBefore(endTime));
-        }
-        return streamMeals.collect(Collectors.toList());
+        log.info("select");
+        return MealsUtil.getFilteredTos(
+                service.select(authUserId(), startDate, endDate),
+                MealsUtil.DEFAULT_CALORIES_PER_DAY,
+                startTime,
+                endTime
+        );
     }
 
     private List<MealTo> getMealTo(List<Meal> meals) {

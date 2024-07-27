@@ -67,14 +67,14 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public List<Meal> select(int userId, LocalDate startDate, LocalDate endDate) {
-        Stream<Meal> streamMeals = this.getAll(userId).stream();
+        Stream<Meal> streamMeals = this.getRepositoryForUser(userId).values().stream();
         if (startDate != null) {
-            streamMeals.filter(meal -> meal.getDateTime().toLocalDate().isAfter(startDate)).collect(Collectors.toList());
+            streamMeals = streamMeals.filter(meal -> meal.getDateTime().toLocalDate().isAfter(startDate.minusDays(1)));
         }
         if (endDate != null) {
-            streamMeals.filter(meal -> meal.getDateTime().toLocalDate().isBefore(endDate)).collect(Collectors.toList());
+            streamMeals = streamMeals.filter(meal -> meal.getDateTime().toLocalDate().isBefore(endDate.plusDays(1)));
         }
-        return streamMeals.collect(Collectors.toList());
+        return streamMeals.sorted(Comparator.comparing(Meal::getDateTime).reversed()).collect(Collectors.toList());
     }
 
     private Map<Integer, Meal> getRepositoryForUser(int userId) {

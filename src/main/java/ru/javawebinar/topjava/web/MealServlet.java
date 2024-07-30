@@ -67,6 +67,15 @@ public class MealServlet extends HttpServlet {
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
+            case "allFor":
+                String authUserIdStr = request.getParameter("authUserId");
+                if (authUserIdStr != null) {
+                    Integer authUserId = Integer.parseInt(authUserIdStr);
+                    log.info("authUserId {}", authUserId);
+                    SecurityUtil.setAuthUserId(authUserId);
+                } else {
+                    SecurityUtil.setAuthUserId(null);
+                }
             case "all":
             default:
                 log.info("getAll");
@@ -79,6 +88,7 @@ public class MealServlet extends HttpServlet {
                                 getTimeFromRequest(request, "endTime")
                         )
                 );
+                request.setAttribute("userName", SecurityUtil.authUserName());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }

@@ -21,6 +21,36 @@
     <h3><a href="index.html">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
+    <div class="card border-dark">
+        <div class="card-body pb-0">
+            <form method="get" action="meals">
+                <div class="row">
+                    <div class="col-2">
+                        <label for="startDate">От даты (включая)</label>
+                        <input type="date" class="form-control" name="startDate" id="startDate" autocomplete="off"
+                               value="${startDate}">
+                    </div>
+                    <div class="col-2">
+                        <label for="endDate">До даты (включая)</label>
+                        <input type="date" class="form-control" name="endDate" id="endDate" autocomplete="off"
+                               value="${endDate}">
+                    </div>
+                    <div class="offset-2 col-3">
+                        <label for="startTime">От времени (включая)</label>
+                        <input type="time" class="form-control" name="startTime" id="startTime" autocomplete="off"
+                               value="${startTime}">
+                    </div>
+                    <div class="col-3">
+                        <label for="endTime">До времени (исключая)</label>
+                        <input type="time" class="form-control" name="endTime" id="endTime" autocomplete="off"
+                               value="${endTime}">
+                    </div>
+                </div>
+                <button type="submit">Отфильтровать</button>
+            </form>
+        </div>
+    </div>
+    <hr/>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">

@@ -11,7 +11,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -67,7 +70,15 @@ public class MealServlet extends HttpServlet {
             case "all":
             default:
                 log.info("getAll");
-                request.setAttribute("meals", mealRestController.getAll());
+                request.setAttribute(
+                        "meals",
+                        mealRestController.select(
+                                getDateFromRequest(request, "startDate"),
+                                getTimeFromRequest(request, "startTime"),
+                                getDateFromRequest(request, "endDate"),
+                                getTimeFromRequest(request, "endTime")
+                        )
+                );
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
@@ -76,5 +87,25 @@ public class MealServlet extends HttpServlet {
     private int getId(HttpServletRequest request) {
         String paramId = Objects.requireNonNull(request.getParameter("id"));
         return Integer.parseInt(paramId);
+    }
+
+    private LocalDate getDateFromRequest(HttpServletRequest request, String name) {
+        final String str = request.getParameter(name);
+        if (str == null || str.isEmpty()) {
+            request.setAttribute(name, "");
+            return null;
+        }
+        request.setAttribute(name, str);
+        return LocalDate.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
+    private LocalTime getTimeFromRequest(HttpServletRequest request, String name) {
+        final String str = request.getParameter(name);
+        if (str == null || str.isEmpty()) {
+            request.setAttribute(name, "");
+            return null;
+        }
+        request.setAttribute(name, str);
+        return LocalTime.parse(str, DateTimeFormatter.ofPattern("HH:mm"));
     }
 }

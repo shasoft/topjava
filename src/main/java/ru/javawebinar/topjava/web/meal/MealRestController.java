@@ -41,7 +41,7 @@ public class MealRestController {
     }
 
     public List<MealTo> select(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
-        log.info("select");
+        log.info("select [{} {}]-[{} {}]", startDate, startTime, endDate, endTime);
         return MealsUtil.getFilteredTos(
                 service.select(authUserId(), startDate, endDate),
                 MealsUtil.DEFAULT_CALORIES_PER_DAY,

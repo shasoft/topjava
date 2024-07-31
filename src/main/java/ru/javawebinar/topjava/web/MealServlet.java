@@ -21,12 +21,19 @@ import java.util.Objects;
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
+    private ClassPathXmlApplicationContext appCtx;
+
     private MealRestController mealRestController;
 
     @Override
     public void init() {
-        ClassPathXmlApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
         mealRestController = appCtx.getBean(MealRestController.class);
+    }
+
+    @Override
+    public void destroy() {
+        appCtx.close();
     }
 
     @Override
@@ -102,20 +109,16 @@ public class MealServlet extends HttpServlet {
     private LocalDate getDateFromRequest(HttpServletRequest request, String name) {
         final String str = request.getParameter(name);
         if (str == null || str.isEmpty()) {
-            request.setAttribute(name, "");
             return null;
         }
-        request.setAttribute(name, str);
         return LocalDate.parse(str, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
     private LocalTime getTimeFromRequest(HttpServletRequest request, String name) {
         final String str = request.getParameter(name);
         if (str == null || str.isEmpty()) {
-            request.setAttribute(name, "");
             return null;
         }
-        request.setAttribute(name, str);
         return LocalTime.parse(str, DateTimeFormatter.ofPattern("HH:mm"));
     }
 }

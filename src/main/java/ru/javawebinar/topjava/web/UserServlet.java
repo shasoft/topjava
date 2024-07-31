@@ -29,7 +29,7 @@ public class UserServlet extends HttpServlet {
                 } else {
                     SecurityUtil.setAuthUserId(null);
                 }
-                request.getRequestDispatcher("/users.jsp").forward(request, response);
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
             case "all":
             default:
                 log.info("getAll");

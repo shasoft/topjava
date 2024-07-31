@@ -29,22 +29,22 @@
                     <div class="col-2">
                         <label for="startDate">От даты (включая)</label>
                         <input type="date" class="form-control" name="startDate" id="startDate" autocomplete="off"
-                               value="${startDate}">
+                               value="<%= request.getParameter("startDate") %>">
                     </div>
                     <div class="col-2">
                         <label for="endDate">До даты (включая)</label>
                         <input type="date" class="form-control" name="endDate" id="endDate" autocomplete="off"
-                               value="${endDate}">
+                               value="<%= request.getParameter("endDate") %>">
                     </div>
                     <div class="offset-2 col-3">
                         <label for="startTime">От времени (включая)</label>
                         <input type="time" class="form-control" name="startTime" id="startTime" autocomplete="off"
-                               value="${startTime}">
+                               value="<%= request.getParameter("startTime") %>">
                     </div>
                     <div class="col-3">
                         <label for="endTime">До времени (исключая)</label>
                         <input type="time" class="form-control" name="endTime" id="endTime" autocomplete="off"
-                               value="${endTime}">
+                               value="<%= request.getParameter("endTime") %>">
                     </div>
                 </div>
                 <button type="submit">Отфильтровать</button>

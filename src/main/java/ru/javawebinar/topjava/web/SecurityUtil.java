@@ -13,19 +13,6 @@ public class SecurityUtil {
         currentUserId = userId;
     }
 
-    public static String authUserName() {
-        String name = "Аноним";
-        switch (currentUserId) {
-            case 1:
-                name = "Пользователь";
-                break;
-            case 2:
-                name = "Администратор";
-                break;
-        }
-        return name;
-    }
-
     public static int authUserCaloriesPerDay() {
         return DEFAULT_CALORIES_PER_DAY;
     }

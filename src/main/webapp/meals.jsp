@@ -20,7 +20,7 @@
 <section>
     <h3><a href="index.html">Home</a></h3>
     <hr/>
-    <p>Текущий пользователь: <strong>${userName}</strong></p>
+    <p>Текущий пользователь: <strong>${userId}</strong></p>
     <h2>Meals</h2>
     <div class="card border-dark">
         <div class="card-body pb-0">

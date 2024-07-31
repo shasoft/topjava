@@ -37,7 +37,7 @@ public class MealRestController {
 
     public List<MealTo> getAll() {
         log.info("getAll");
-        return getMealTo(service.getAll(authUserId()));
+        return MealsUtil.getTos(service.getAll(authUserId()), authUserCaloriesPerDay());
     }
 
     public List<MealTo> select(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
@@ -48,10 +48,6 @@ public class MealRestController {
                 startTime,
                 endTime
         );
-    }
-
-    private List<MealTo> getMealTo(List<Meal> meals) {
-        return MealsUtil.getTos(meals, authUserCaloriesPerDay());
     }
 
     public void delete(int id) {

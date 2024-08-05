@@ -11,7 +11,7 @@
 <section>
     <h3><a href="index.html">Home</a></h3>
     <hr/>
-    <h2>Meals</h2>
+    <h2 style="color:${ userId==100001 ? "red":"green" }">Meals for user ${userId}</h2>
     <form method="get" action="meals">
         <input type="hidden" name="action" value="filter">
         <dl>

@@ -26,16 +26,16 @@ public class MealTestData {
         return new Meal(null, LocalDateTime.of(2023, Month.MARCH, 3, 3, 3), "Перекус", 333);
     }
 
-    public static void assertMatch(Meal actual, Meal expected) {
-        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
-    }
-
     public static Meal getUpdated() {
         Meal updated = new Meal(meal1);
         updated.setDescription("Ночная жрачка");
         updated.setDateTime(LocalDateTime.of(2022, Month.SEPTEMBER, 1, 4, 4));
         updated.setCalories(444);
         return updated;
+    }
+
+    public static void assertMatch(Meal actual, Meal expected) {
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
     public static void assertMatch(Iterable<Meal> actual, Meal... expected) {

@@ -28,7 +28,7 @@ public class Meal extends AbstractBaseEntity {
     public static final String BETWEEN_HALF_OPEN = "Meal.getBetweenHalfOpen";
     public static final String GET = "Meal.get";
 
-    @Column(name = "date_time", nullable = false, columnDefinition = "timestamp default now()")
+    @Column(name = "date_time", nullable = false)
     @NotNull
     private LocalDateTime dateTime;
 

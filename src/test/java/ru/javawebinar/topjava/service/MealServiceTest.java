@@ -48,6 +48,7 @@ public class MealServiceTest {
                     description.getMethodName(),
                     TimeUnit.NANOSECONDS.toMillis(nanos));
             linesReport.append(result).append('\n');
+            log.info("\n"+DELIM_LINE+DELIM_LINE+"\n"+description.getClassName()+"."+result+"\n"+DELIM_LINE+DELIM_LINE);
         }
     };
 

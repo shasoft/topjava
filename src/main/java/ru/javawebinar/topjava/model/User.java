@@ -128,7 +128,7 @@ public class User extends AbstractNamedEntity {
     }
 
     public List<Meal> getMeals() {
-        return meals;
+        return meals == null ? Collections.emptyList() : meals;
     }
 
     @Override

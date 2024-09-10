@@ -6,10 +6,13 @@ import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserServiceTest;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.Profiles.DATAJPA;
 import static ru.javawebinar.topjava.UserTestData.*;
+import static ru.javawebinar.topjava.UserTestData.NOT_FOUND;
 
 @ActiveProfiles(DATAJPA)
 public class DataJpaUserServiceTest extends UserServiceTest {
@@ -29,6 +32,6 @@ public class DataJpaUserServiceTest extends UserServiceTest {
 
     @Test
     public void getWithMealsNotFound() {
-        //assertThrows(NotFoundException.class, () -> service.getWithMeals(NOT_FOUND));
+        assertThrows(NotFoundException.class, () -> service.getWithMeals(NOT_FOUND));
     }
 }

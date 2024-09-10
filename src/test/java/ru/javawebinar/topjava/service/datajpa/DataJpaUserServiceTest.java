@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.service.datajpa;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.UserTestData;
@@ -8,8 +9,7 @@ import ru.javawebinar.topjava.service.UserServiceTest;
 
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.Profiles.DATAJPA;
-import static ru.javawebinar.topjava.UserTestData.USER_ID;
-import static ru.javawebinar.topjava.UserTestData.USER_MATCHER;
+import static ru.javawebinar.topjava.UserTestData.*;
 
 @ActiveProfiles(DATAJPA)
 public class DataJpaUserServiceTest extends UserServiceTest {
@@ -18,5 +18,12 @@ public class DataJpaUserServiceTest extends UserServiceTest {
         User user = service.getWithMeals(USER_ID);
         USER_MATCHER.assertMatch(user, UserTestData.user);
         MEAL_MATCHER.assertMatch(user.getMeals(), meal7, meal6, meal5, meal4, meal3, meal2, meal1);
+    }
+
+    @Test
+    public void getWithNotMeals() throws Exception {
+        User guest = service.getWithMeals(GUEST_ID);
+        USER_MATCHER.assertMatch(guest, UserTestData.guest);
+        //Assert.assertEquals(0, user.getMeals().size());
     }
 }

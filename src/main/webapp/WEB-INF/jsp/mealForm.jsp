@@ -28,5 +28,6 @@
         <button onclick="window.history.back()" type="button"><spring:message code="button.cancel"/></button>
     </form>
 </section>
+<jsp:include page="fragments/footer.jsp"/>
 </body>
 </html>

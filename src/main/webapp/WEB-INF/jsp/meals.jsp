@@ -37,7 +37,7 @@
         <tr>
             <th><spring:message code="meal.datetime"/></th>
             <th><spring:message code="meal.description"/></th>
-            <th><spring:message code="meal.сalories"/></th>
+            <th><spring:message code="meal.calories"/></th>
             <th></th>
             <th></th>
         </tr>

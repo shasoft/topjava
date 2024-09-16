@@ -50,16 +50,16 @@ public class JdbcUserRepository implements UserRepository {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
         } else if (namedParameterJdbcTemplate.update("""
-                   UPDATE users SET name=:name, email=:email, password=:password, 
+                   UPDATE users SET name=:name, email=:email, password=:password,
                    registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
                 """, parameterSource) == 0) {
             return null;
         }
         // Удалить старые роли
-        jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.getId());
+        jdbcTemplate.update("DELETE FROM user_role WHERE user_id=?", user.getId());
         // Добавить новые роли
         final List<Role> rolesList = List.copyOf(user.getRoles());
-        jdbcTemplate.batchUpdate("INSERT INTO user_roles (user_id, role) VALUES (?,?)",
+        jdbcTemplate.batchUpdate("INSERT INTO user_role (user_id, role) VALUES (?,?)",
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -104,20 +104,22 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     private void selectRolesForUsers(List<User> users) {
-        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-        MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("ids", users.stream().map(user -> user.getId()).toList());
-        Map<Integer, Set<Role>> rolesForUser = namedParameterJdbcTemplate.query("SELECT * FROM user_role WHERE user_id IN (:ids)",
-                parameters,
-                rs -> {
-                    Map<Integer, Set<Role>> mapRoles = new HashMap<>();
-                    while (rs.next()) {
-                        Set<Role> roles = mapRoles.computeIfAbsent(rs.getInt("user_id"), id -> new HashSet<>());
-                        roles.add(Role.valueOf(rs.getString("role")));
+        if (!users.isEmpty()) {
+            NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            parameters.addValue("ids", users.stream().map(user -> user.getId()).toList());
+            Map<Integer, Set<Role>> rolesForUser = namedParameterJdbcTemplate.query("SELECT * FROM user_role WHERE user_id IN (:ids)",
+                    parameters,
+                    rs -> {
+                        Map<Integer, Set<Role>> mapRoles = new HashMap<>();
+                        while (rs.next()) {
+                            Set<Role> roles = mapRoles.computeIfAbsent(rs.getInt("user_id"), id -> new HashSet<>());
+                            roles.add(Role.valueOf(rs.getString("role")));
+                        }
+                        return mapRoles;
                     }
-                    return mapRoles;
-                }
-        );
-        users.forEach(user -> user.setRoles(rolesForUser.get(user.getId())));
+            );
+            users.forEach(user -> user.setRoles(rolesForUser.get(user.getId())));
+        }
     }
 }

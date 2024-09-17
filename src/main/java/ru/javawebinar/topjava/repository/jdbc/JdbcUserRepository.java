@@ -58,9 +58,9 @@ public class JdbcUserRepository implements UserRepository {
                 """, parameterSource) == 0) {
             return null;
         }
-        // Удалить старые роли
+        //
         jdbcTemplate.update("DELETE FROM user_role WHERE user_id=?", user.getId());
-        // Добавить новые роли
+        //
         final List<Role> rolesList = List.copyOf(user.getRoles());
         jdbcTemplate.batchUpdate("INSERT INTO user_role (user_id, role) VALUES (?,?)",
                 new BatchPreparedStatementSetter() {

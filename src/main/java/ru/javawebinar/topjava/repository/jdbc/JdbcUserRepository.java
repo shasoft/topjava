@@ -87,42 +87,36 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     public User get(int id) {
         List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE id=?", ROW_MAPPER, id);
-        selectRolesForUsers(users);
-        return DataAccessUtils.singleResult(users);
+        return selectRolesForUser(DataAccessUtils.singleResult(users));
     }
 
     @Override
     public User getByEmail(String email) {
 //        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
         List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
-        selectRolesForUsers(users);
-        return DataAccessUtils.singleResult(users);
+        return selectRolesForUser(DataAccessUtils.singleResult(users));
     }
 
     @Override
     public List<User> getAll() {
         List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
-        selectRolesForUsers(users);
+        Map<Integer, Set<Role>> rolesForUser = jdbcTemplate.query("SELECT * FROM user_role",
+                rs -> {
+                    Map<Integer, Set<Role>> mapRoles = new HashMap<>();
+                    while (rs.next()) {
+                        Set<Role> roles = mapRoles.computeIfAbsent(rs.getInt("user_id"), id -> new HashSet<>());
+                        roles.add(Role.valueOf(rs.getString("role")));
+                    }
+                    return mapRoles;
+                });
+        users.forEach(user -> user.setRoles(rolesForUser.get(user.getId())));
         return users;
     }
 
-    private void selectRolesForUsers(List<User> users) {
-        if (!users.isEmpty()) {
-            NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-            MapSqlParameterSource parameters = new MapSqlParameterSource();
-            parameters.addValue("ids", users.stream().map(user -> user.getId()).toList());
-            Map<Integer, Set<Role>> rolesForUser = namedParameterJdbcTemplate.query("SELECT * FROM user_role WHERE user_id IN (:ids)",
-                    parameters,
-                    rs -> {
-                        Map<Integer, Set<Role>> mapRoles = new HashMap<>();
-                        while (rs.next()) {
-                            Set<Role> roles = mapRoles.computeIfAbsent(rs.getInt("user_id"), id -> new HashSet<>());
-                            roles.add(Role.valueOf(rs.getString("role")));
-                        }
-                        return mapRoles;
-                    }
-            );
-            users.forEach(user -> user.setRoles(rolesForUser.get(user.getId())));
+    private User selectRolesForUser(User user) {
+        if (user != null) {
+            user.setRoles(jdbcTemplate.queryForList("SELECT role FROM user_role  WHERE user_id=?", Role.class, user.getId()));
         }
+        return user;
     }
 }

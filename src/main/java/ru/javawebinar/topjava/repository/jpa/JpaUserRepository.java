@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.repository.jpa;
 
+import org.hibernate.jpa.QueryHints;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,8 +54,8 @@ public class JpaUserRepository implements UserRepository {
         return query.setParameter("id", id).executeUpdate() != 0;
 */
         return em.createNamedQuery(User.DELETE)
-                .setParameter("id", id)
-                .executeUpdate() != 0;
+                       .setParameter("id", id)
+                       .executeUpdate() != 0;
     }
 
     @Override
@@ -62,7 +63,8 @@ public class JpaUserRepository implements UserRepository {
         List<User> users = em.createNamedQuery(User.BY_EMAIL, User.class)
                 .setParameter(1, email)
                 .getResultList();
-        return DataAccessUtils.singleResult(users);
+        if (users.isEmpty()) return null;
+        return users.get(0);//return DataAccessUtils.singleResult(users);
     }
 
     @Override

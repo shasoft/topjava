@@ -30,11 +30,10 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getAll() throws Exception {
-        final String body = perform(MockMvcRequestBuilders.get(MealRestController.REST_URL))
+        perform(MockMvcRequestBuilders.get(MealRestController.REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse().getContentAsString();
-        assertEquals(body, JsonUtil.writeValue(getTos(meals, DEFAULT_CALORIES_PER_DAY)));
+                .andExpect(MEAL_TO_MATCHER.contentJson(getTos(meals, DEFAULT_CALORIES_PER_DAY)));
     }
 
     @Test

@@ -55,8 +55,10 @@ class MealRestControllerTest extends AbstractControllerTest {
                         .content(JsonUtil.writeValue(meal)))
                         .andExpect(status().isCreated())
         );
-        meal.setId(mealFromRequest.id());
+        int newId = mealFromRequest.id();
+        meal.setId(newId);
         MEAL_MATCHER.assertMatch(mealFromRequest, meal);
+        MEAL_MATCHER.assertMatch(mealService.get(newId, USER_ID), meal);
     }
 
     @Test

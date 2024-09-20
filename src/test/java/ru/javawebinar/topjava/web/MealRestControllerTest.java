@@ -7,21 +7,21 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
-import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
-import static ru.javawebinar.topjava.util.MealsUtil.getTos;
+import static ru.javawebinar.topjava.util.MealsUtil.*;
 import static ru.javawebinar.topjava.web.meal.MealRestController.REST_URL;
 
 class MealRestControllerTest extends AbstractControllerTest {
@@ -81,13 +81,21 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getBetween() throws Exception {
-        final String body = perform(MockMvcRequestBuilders.get(REST_URL + "/filter")
-                .param("start", "2020-01-31T00:00:00")
-                .param("end", "2020-01-31T23:59:59"))
+        final String date = "2020-01-31";
+        final String startTime = "13:00:00";
+        final String endTime = "23:59:59";
+        final List<MealTo> mealsTo = getFilteredTos(
+                List.of(meal7, meal6, meal5, meal4),
+                SecurityUtil.authUserCaloriesPerDay(),
+                DateTimeUtil.parseLocalTime(startTime),
+                DateTimeUtil.parseLocalTime(endTime)
+        );
+        perform(MockMvcRequestBuilders.get(REST_URL + "/filter")
+                .param("start", date + "T" + startTime)
+                .param("end", date + "T" + endTime))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse().getContentAsString();
-        assertEquals(body, JsonUtil.writeValue(getTos(List.of(meal7, meal6, meal5, meal4), DEFAULT_CALORIES_PER_DAY)));
+                .andExpect(MEAL_TO_MATCHER.contentJson(mealsTo));
     }
 
     private String urlForId(int id) {

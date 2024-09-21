@@ -91,8 +91,11 @@ class MealRestControllerTest extends AbstractControllerTest {
                 DateTimeUtil.parseLocalTime(endTime)
         );
         perform(MockMvcRequestBuilders.get(REST_URL + "/filter")
-                .param("start", date + "T" + startTime)
-                .param("end", date + "T" + endTime))
+                .param("startDate", date)
+                .param("startTime", startTime)
+                .param("endDate", date)
+                .param("endTime", endTime)
+        )
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MEAL_TO_MATCHER.contentJson(mealsTo));

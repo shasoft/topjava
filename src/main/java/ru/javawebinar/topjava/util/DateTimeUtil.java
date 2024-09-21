@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.util;
 
+import org.springframework.format.Formatter;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
@@ -7,6 +8,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
 
 public class DateTimeUtil {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -38,6 +43,32 @@ public class DateTimeUtil {
     public static @Nullable
     LocalTime parseLocalTime(@Nullable String str) {
         return StringUtils.hasLength(str) ? LocalTime.parse(str) : null;
+    }
+
+    public static class LocalDateConverter implements Formatter<LocalDate> {
+
+        @Override
+        public LocalDate parse(@Nullable String text, Locale locale) {
+            return parseLocalDate(text);
+        }
+
+        @Override
+        public String print(LocalDate ld, Locale locale) {
+            return ld.format(ISO_LOCAL_DATE);
+        }
+    }
+
+    public static class LocalTimeConverter implements Formatter<LocalTime> {
+
+        @Override
+        public LocalTime parse(@org.springframework.lang.Nullable String text, Locale locale) {
+            return parseLocalTime(text);
+        }
+
+        @Override
+        public String print(LocalTime lt, Locale locale) {
+            return lt.format(ISO_LOCAL_TIME);
+        }
     }
 }
 

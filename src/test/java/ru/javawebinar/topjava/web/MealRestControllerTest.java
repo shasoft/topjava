@@ -8,7 +8,6 @@ import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
@@ -21,7 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
-import static ru.javawebinar.topjava.util.MealsUtil.*;
+import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
+import static ru.javawebinar.topjava.util.MealsUtil.getTos;
 import static ru.javawebinar.topjava.web.meal.MealRestController.REST_URL;
 
 class MealRestControllerTest extends AbstractControllerTest {
@@ -81,15 +81,13 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void getBetween() throws Exception {
+        final List<MealTo> mealsTo = List.of(
+                new MealTo(meal7.getId(), meal7.getDateTime(), meal7.getDescription(), meal7.getCalories(), true),
+                new MealTo(meal6.getId(), meal6.getDateTime(), meal6.getDescription(), meal6.getCalories(), true)
+        );
         final String date = "2020-01-31";
         final String startTime = "13:00:00";
         final String endTime = "23:59:59";
-        final List<MealTo> mealsTo = getFilteredTos(
-                List.of(meal7, meal6, meal5, meal4),
-                SecurityUtil.authUserCaloriesPerDay(),
-                DateTimeUtil.parseLocalTime(startTime),
-                DateTimeUtil.parseLocalTime(endTime)
-        );
         perform(MockMvcRequestBuilders.get(REST_URL + "/filter")
                 .param("startDate", date)
                 .param("startTime", startTime)

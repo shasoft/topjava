@@ -20,8 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
-import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
-import static ru.javawebinar.topjava.util.MealsUtil.getTos;
 import static ru.javawebinar.topjava.web.meal.MealRestController.REST_URL;
 
 class MealRestControllerTest extends AbstractControllerTest {
@@ -33,7 +31,17 @@ class MealRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(MealRestController.REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_TO_MATCHER.contentJson(getTos(meals, DEFAULT_CALORIES_PER_DAY)));
+                .andExpect(
+                        MEAL_TO_MATCHER.contentJson(
+                                new MealTo(meal7, true),
+                                new MealTo(meal6, true),
+                                new MealTo(meal5, true),
+                                new MealTo(meal4, true),
+                                new MealTo(meal3, false),
+                                new MealTo(meal2, false),
+                                new MealTo(meal1, false)
+                        )
+                );
     }
 
     @Test
@@ -82,8 +90,8 @@ class MealRestControllerTest extends AbstractControllerTest {
     @Test
     void getBetween() throws Exception {
         final List<MealTo> mealsTo = List.of(
-                new MealTo(meal7.getId(), meal7.getDateTime(), meal7.getDescription(), meal7.getCalories(), true),
-                new MealTo(meal6.getId(), meal6.getDateTime(), meal6.getDescription(), meal6.getCalories(), true)
+                new MealTo(meal7, true),
+                new MealTo(meal6, true)
         );
         final String date = "2020-01-31";
         final String startTime = "13:00:00";

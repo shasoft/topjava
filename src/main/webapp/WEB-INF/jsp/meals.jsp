@@ -33,6 +33,11 @@
             <span class="fa fa-filter"></span>
             <spring:message code="meal.filter"/>
         </button>
+        <button type="button" class="btn btn-primary" onclick="filterReset()">
+            <span class="fa fa-eraser"></span>
+            <spring:message code="meal.reset"/>
+        </button>
+        <input class="btn btn-primary" type="reset" value="Reset"/>
     </form>
     <hr>
     <a href="meals/create"><spring:message code="meal.add"/></a>

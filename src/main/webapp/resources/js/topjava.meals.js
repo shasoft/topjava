@@ -48,3 +48,10 @@ function filter() {
         successNoty("Filtered");
     });
 }
+
+function filterReset() {
+    $('#filterForm').each(function (index, form) {
+        console.log(form);
+        form.reset();
+    })
+}

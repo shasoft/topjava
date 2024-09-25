@@ -17,6 +17,12 @@ import java.util.List;
 public class MealUIController extends AbstractMealController {
     static final String URL = "/meals";
 
+    @Override
+    @GetMapping
+    public List<MealTo> getAll() {
+        return super.getAll();
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void create(
@@ -43,11 +49,5 @@ public class MealUIController extends AbstractMealController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         super.delete(id);
-    }
-
-    @Override
-    @GetMapping
-    public List<MealTo> getAll() {
-        return super.getAll();
     }
 }

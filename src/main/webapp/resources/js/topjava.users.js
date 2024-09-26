@@ -45,3 +45,19 @@ $(function () {
         })
     );
 });
+
+function enable(id, input) {
+    console.log("enable", input.checked);
+    $.ajax({
+        type: "POST",
+        url: ctx.ajaxUrl + `${id}` + "/enable",
+        data: {enabled: input.checked}
+    }).done(function () {
+        $(input)
+            .parents("tr")
+            .removeClass("user-enable-on")
+            .removeClass("user-enable-off")
+            .addClass(input.checked ? "user-enable-on" : "user-enable-off");
+        successNoty("enable " + (input.checked ? "On" : "Off"));
+    });
+}

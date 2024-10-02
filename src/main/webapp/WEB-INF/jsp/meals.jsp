@@ -40,8 +40,6 @@
         <input class="btn btn-primary" type="reset" value="Reset"/>
     </form>
     <hr>
-    <a href="meals/create"><spring:message code="meal.add"/></a>
-    <hr>
     <button class="btn btn-primary" onclick="add()">
         <span class="fa fa-plus"></span>
         <spring:message code="meal.add"/>

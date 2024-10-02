@@ -18,7 +18,7 @@ public class MealUIController extends AbstractMealController {
     static final String URL = "/meals";
 
     @Override
-    @GetMapping
+    @GetMapping("/")
     public List<MealTo> getAll() {
         return super.getAll();
     }

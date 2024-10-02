@@ -37,7 +37,6 @@
             <span class="fa fa-eraser"></span>
             <spring:message code="meal.reset"/>
         </button>
-        <input class="btn btn-primary" type="reset" value="Reset"/>
     </form>
     <hr>
     <button class="btn btn-primary" onclick="add()">

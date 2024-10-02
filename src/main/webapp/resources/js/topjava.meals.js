@@ -51,7 +51,8 @@ function filter() {
 
 function filterReset() {
     $('#filterForm').each(function (index, form) {
-        console.log(form);
         form.reset();
+        updateTable();
+        successNoty("Reset filter");
     })
 }

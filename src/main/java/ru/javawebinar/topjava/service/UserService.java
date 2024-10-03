@@ -58,6 +58,6 @@ public class UserService {
 
     @CacheEvict(value = "users", allEntries = true)
     public void enable(int id, boolean enabled) {
-        repository.enable(id, enabled);
+        checkNotFoundWithId(repository.enable(id, enabled),id);
     }
 }

@@ -23,7 +23,7 @@ public interface UserRepository {
         throw new UnsupportedOperationException();
     }
 
-    default void enable(int id, boolean enabled) {
+    default boolean enable(int id, boolean enabled) {
         throw new UnsupportedOperationException();
     }
 }

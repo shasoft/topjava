@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.web.user;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.MultiValueMap;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
 
@@ -54,8 +55,15 @@ public abstract class AbstractUserController {
         return service.getWithMeals(id);
     }
 
-    public void enable(int id, boolean enabled) {
-        log.info("enable {}", enabled);
+    public boolean enable(int id, MultiValueMap<String, String> formParams) {
+        log.info("enable {} {}", id, formParams);
+        boolean enabled = false;
+        String enabledStr = formParams.getFirst("enabled");
+        if (enabledStr != null) {
+            enabled = Boolean.parseBoolean(enabledStr);
+        }
+        log.info("enable {} {}", id, enabled);
         service.enable(id, enabled);
+        return enabled;
     }
 }

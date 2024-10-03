@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.web.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
@@ -34,9 +35,9 @@ public class AdminUIController extends AbstractUserController {
     }
 
     @Override
-    @PostMapping(value = "/{id}/enable")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void enable(@PathVariable int id, @RequestParam boolean enabled) {
-        super.enable(id, enabled);
+    @PatchMapping(value = "/{id}/enable0")
+    @ResponseBody
+    public boolean enable(@PathVariable int id, @RequestBody MultiValueMap<String, String> formParams) {
+        return super.enable(id, formParams);
     }
 }

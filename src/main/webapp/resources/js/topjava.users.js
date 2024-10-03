@@ -49,7 +49,7 @@ $(function () {
 function enable(id, input) {
     console.log("enable", input.checked);
     $.ajax({
-        type: "POST",
+        type: "PATCH",
         url: ctx.ajaxUrl + `${id}` + "/enable",
         data: {enabled: input.checked}
     }).done(function () {

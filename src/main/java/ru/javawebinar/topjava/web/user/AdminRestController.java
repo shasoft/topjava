@@ -64,7 +64,7 @@ public class AdminRestController extends AbstractUserController {
     }
 
     @Override
-    @GetMapping(value = "/{id}/enable", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/{id}/enable", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public boolean enable(@PathVariable int id, @RequestBody MultiValueMap<String, String> formParams) {
         return super.enable(id, formParams);

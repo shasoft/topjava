@@ -34,10 +34,14 @@ public class AdminUIController extends AbstractUserController {
         super.create(new User(null, name, email, password, Role.USER));
     }
 
-    @Override
     @PatchMapping(value = "/{id}/enable")
-    @ResponseBody
-    public boolean enable(@PathVariable int id, @RequestBody MultiValueMap<String, String> formParams) {
-        return super.enable(id, formParams);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void enablePatch(@PathVariable int id, @RequestBody MultiValueMap<String, String> formParams) {
+        boolean enabled = false;
+        String enabledStr = formParams.getFirst("enabled");
+        if (enabledStr != null) {
+            enabled = Boolean.parseBoolean(enabledStr);
+        }
+        super.enable(id, enabled);
     }
 }

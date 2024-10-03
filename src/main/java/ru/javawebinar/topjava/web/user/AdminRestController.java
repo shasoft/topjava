@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.web.user;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.User;
@@ -65,8 +64,8 @@ public class AdminRestController extends AbstractUserController {
 
     @Override
     @PatchMapping(value = "/{id}/enable", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public boolean enable(@PathVariable int id, @RequestBody MultiValueMap<String, String> formParams) {
-        return super.enable(id, formParams);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void enable(@PathVariable int id, @RequestParam boolean enabled) {
+        super.enable(id, enabled);
     }
 }

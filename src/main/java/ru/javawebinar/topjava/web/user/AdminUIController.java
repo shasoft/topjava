@@ -35,7 +35,7 @@ public class AdminUIController extends AbstractUserController {
     }
 
     @Override
-    @PatchMapping(value = "/{id}/enable0")
+    @PatchMapping(value = "/{id}/enable")
     @ResponseBody
     public boolean enable(@PathVariable int id, @RequestBody MultiValueMap<String, String> formParams) {
         return super.enable(id, formParams);

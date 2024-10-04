@@ -59,5 +59,8 @@ function enable(id, input) {
             .removeClass("user-enable-off")
             .addClass(input.checked ? "user-enable-on" : "user-enable-off");
         successNoty("enable " + (input.checked ? "On" : "Off"));
+    }).fail(function (jqXHR) {
+        $(input).prop('checked', !input.checked);
+        failNoty(jqXHR);
     });
 }

@@ -28,7 +28,16 @@ $(function () {
             "info": true,
             "columns": [
                 {
-                    "data": "dateTime"
+                    "data": "dateTime",
+                    "render": function (data, type, row) {
+                        if (type === "display") {
+                            data = data.replace("T", " ");
+                            var tmp = data.split(":");
+                            tmp.pop();
+                            return tmp.join(":");
+                        }
+                        return data;
+                    }
                 },
                 {
                     "data": "description"

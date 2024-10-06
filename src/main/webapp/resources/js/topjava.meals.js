@@ -20,6 +20,10 @@ function clearFilter() {
 $(function () {
     makeEditable(
         $("#datatable").DataTable({
+            "ajax": {
+                "url": mealAjaxUrl,
+                "dataSrc": ""
+            },
             "paging": false,
             "info": true,
             "columns": [
@@ -50,3 +54,5 @@ $(function () {
         })
     );
 });
+
+updateTableByData();

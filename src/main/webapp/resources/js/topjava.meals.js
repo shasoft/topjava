@@ -17,6 +17,14 @@ function clearFilter() {
     $.get(mealAjaxUrl, updateTableByData);
 }
 
+function initDateTimePickerForDateField(id) {
+    $('#' + id).datetimepicker({timepicker: false, format: "Y-m-d"});
+}
+
+function initDateTimePickerForTimeField(id) {
+    $('#' + id).datetimepicker({datepicker: false, format: "H:i"});
+}
+
 $(function () {
     makeEditable(
         $("#datatable").DataTable({
@@ -68,4 +76,8 @@ $(function () {
     );
 
     $("#dateTime").datetimepicker({format: "Y-m-d H:i"});
+    initDateTimePickerForDateField("startDate");
+    initDateTimePickerForDateField("endDate");
+    initDateTimePickerForTimeField("startTime");
+    initDateTimePickerForTimeField("endTime");
 });

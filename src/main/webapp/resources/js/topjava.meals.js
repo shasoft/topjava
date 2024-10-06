@@ -47,10 +47,12 @@ $(function () {
                 },
                 {
                     "defaultContent": "Edit",
+                    "render": renderEditBtn,
                     "orderable": false
                 },
                 {
                     "defaultContent": "Delete",
+                    "render": renderDeleteBtn,
                     "orderable": false
                 }
             ],

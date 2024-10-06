@@ -59,7 +59,12 @@ $(function () {
                     0,
                     "desc"
                 ]
-            ]
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                if (!data.enabled) {
+                    $(row).attr("data-meal-excess", data.excess);
+                }
+            }
         })
     );
 });

@@ -31,10 +31,7 @@ $(function () {
                     "data": "dateTime",
                     "render": function (data, type, row) {
                         if (type === "display") {
-                            data = data.replace("T", " ");
-                            var tmp = data.split(":");
-                            tmp.pop();
-                            return tmp.join(":");
+                            return StringJavaLocalDateTimeToStringUI(data);
                         }
                         return data;
                     }
@@ -69,4 +66,6 @@ $(function () {
             }
         })
     );
+
+    $("#dateTime").datetimepicker({format: "Y-m-d H:i"});
 });

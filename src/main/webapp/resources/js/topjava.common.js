@@ -49,10 +49,17 @@ function updateTableByData(data) {
 }
 
 function save() {
+    var data = $.map(form.serializeArray(), function (item) {
+        if (item.name == "dateTime") {
+            item.value = item.value.replace(" ", "T");
+        }
+        return item;
+    });
+    console.log('data', data);
     $.ajax({
         type: "POST",
         url: ctx.ajaxUrl,
-        data: form.serialize()
+        data: $.param(data)
     }).done(function () {
         $("#editRow").modal("hide");
         ctx.updateTable();

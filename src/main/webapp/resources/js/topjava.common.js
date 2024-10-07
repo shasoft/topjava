@@ -24,7 +24,7 @@ function updateRow(id) {
     $.get(ctx.ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
             if (key === "dateTime") {
-                value = StringJavaLocalDateTimeToStringUI(value);
+                value = isoDatetimeToUi(value);
             }
             form.find("input[name='" + key + "']").val(value);
         });
@@ -50,7 +50,7 @@ function updateTableByData(data) {
 
 function save() {
     var data = $.map(form.serializeArray(), function (item) {
-        if (item.name == "dateTime") {
+        if (item.name === "dateTime") {
             item.value = item.value.replace(" ", "T");
         }
         return item;
@@ -108,7 +108,7 @@ function failNoty(jqXHR) {
     failedNote.show()
 }
 
-function StringJavaLocalDateTimeToStringUI(value) {
+function isoDatetimeToUi(value) {
     var tmp = value.replace("T", " ").split(":");
     tmp.pop();
     return tmp.join(":");

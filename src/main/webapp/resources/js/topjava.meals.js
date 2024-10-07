@@ -39,7 +39,7 @@ $(function () {
                     "data": "dateTime",
                     "render": function (data, type, row) {
                         if (type === "display") {
-                            return StringJavaLocalDateTimeToStringUI(data);
+                            return isoDatetimeToUi(data);
                         }
                         return data;
                     }

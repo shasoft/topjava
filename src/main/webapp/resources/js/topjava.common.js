@@ -24,7 +24,7 @@ function updateRow(id) {
     $.get(ctx.ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
             if (key === "dateTime") {
-                value = isoDatetimeToUi(value);
+                value = formatDatetimeFromIso(value);
             }
             form.find("input[name='" + key + "']").val(value);
         });
@@ -108,7 +108,7 @@ function failNoty(jqXHR) {
     failedNote.show()
 }
 
-function isoDatetimeToUi(value) {
+function formatDatetimeFromIso(value) {
     var tmp = value.replace("T", " ").split(":");
     tmp.pop();
     return tmp.join(":");

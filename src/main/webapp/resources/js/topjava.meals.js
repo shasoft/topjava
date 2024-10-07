@@ -39,7 +39,7 @@ $(function () {
                     "data": "dateTime",
                     "render": function (data, type, row) {
                         if (type === "display") {
-                            return isoDatetimeToUi(data);
+                            return formatDatetimeFromIso(data);
                         }
                         return data;
                     }
@@ -68,9 +68,7 @@ $(function () {
                 ]
             ],
             "createdRow": function (row, data, dataIndex) {
-                if (!data.enabled) {
-                    $(row).attr("data-meal-excess", data.excess);
-                }
+                $(row).attr("data-meal-excess", data.excess);
             }
         })
     );

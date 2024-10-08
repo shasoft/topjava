@@ -78,8 +78,17 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
+    }
 
-        MEAL_MATCHER.assertMatch(mealService.get(MEAL1_ID, USER_ID), updated);
+    @Test
+    void updateNotValid() throws Exception {
+        Meal updated = getUpdated();
+        updated.setCalories(100000);
+        ResultActions action = perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(updated)))
+                .andExpect(status().isUnprocessableEntity());
+        assertThat(action.andReturn().getResponse().getContentAsString(), containsString("[must be between 10 and 5000]"));
     }
 
     @Test

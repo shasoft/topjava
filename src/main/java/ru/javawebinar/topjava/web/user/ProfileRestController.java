@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.web.user;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.User;
@@ -17,6 +18,17 @@ import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 @RequestMapping(value = ProfileRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProfileRestController extends AbstractUserController {
     static final String REST_URL = "/rest/profile";
+
+    final UserValidator validator;
+
+    public ProfileRestController(UserValidator validator) {
+        this.validator = validator;
+    }
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(validator);
+    }
 
     @GetMapping
     public User get() {

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.to.UserTo;
@@ -106,6 +107,21 @@ class ProfileRestControllerTest extends AbstractControllerTest {
         assertThat(
                 action.andReturn().getResponse().getContentAsString(),
                 containsString("default message [email]]; default message [must not be blank]]")
+        );
+    }
+
+    @Test
+    @Transactional
+    void updateEmailDuplicate() throws Exception {
+        UserTo updatedTo = new UserTo(null, "newName", admin.getEmail(), "newPassword", 1500);
+        ResultActions action = perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(updatedTo)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+        assertThat(
+                action.andReturn().getResponse().getContentAsString(),
+                containsString("[Пользователь с таким адресом электронной почты уже существует]")
         );
     }
 

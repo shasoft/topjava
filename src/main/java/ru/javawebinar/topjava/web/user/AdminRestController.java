@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.web.user;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.User;
@@ -18,15 +17,8 @@ public class AdminRestController extends AbstractUserController {
 
     static final String REST_URL = "/rest/admin/users";
 
-    final UserValidator validator;
-
     public AdminRestController(UserValidator validator) {
-        this.validator = validator;
-    }
-
-    @InitBinder
-    protected void initBinder(WebDataBinder binder) {
-        binder.addValidators(validator);
+        super(validator);
     }
 
     @Override

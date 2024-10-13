@@ -80,7 +80,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
 
         assertThat(
                 action.andReturn().getResponse().getContentAsString(),
-                containsString("default message [email]]; default message [must not be blank]]")
+                containsString("default message [email]]; default message [не должно быть пустым]]")
         );
     }
 
@@ -106,7 +106,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity());
         assertThat(
                 action.andReturn().getResponse().getContentAsString(),
-                containsString("default message [email]]; default message [must not be blank]]")
+                containsString("default message [email]]; default message [не должно быть пустым]]")
         );
     }
 

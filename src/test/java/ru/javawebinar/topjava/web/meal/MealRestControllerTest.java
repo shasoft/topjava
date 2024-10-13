@@ -88,7 +88,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isUnprocessableEntity());
-        assertThat(action.andReturn().getResponse().getContentAsString(), containsString("[must be between 10 and 5000]"));
+        assertThat(action.andReturn().getResponse().getContentAsString(), containsString("[должно находиться в диапазоне от 10 до 5000]"));
     }
 
     @Test
@@ -116,7 +116,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(newMeal)))
                 .andExpect(status().isUnprocessableEntity());
-        assertThat(action.andReturn().getResponse().getContentAsString(), containsString("[must be between 10 and 5000]"));
+        assertThat(action.andReturn().getResponse().getContentAsString(), containsString("[должно находиться в диапазоне от 10 до 5000]"));
     }
 
     @Test

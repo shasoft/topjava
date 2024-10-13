@@ -2,6 +2,9 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,12 +26,17 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.Map;
+
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
 @RestControllerAdvice(annotations = RestController.class)
 @Order(Ordered.HIGHEST_PRECEDENCE + 5)
 public class ExceptionInfoHandler {
     private static final Logger log = LoggerFactory.getLogger(ExceptionInfoHandler.class);
+
+    @Autowired
+    private MessageSource messageSource;
 
     //  http://stackoverflow.com/a/22358422/548473
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -40,6 +48,15 @@ public class ExceptionInfoHandler {
     @ResponseStatus(HttpStatus.CONFLICT)  // 409
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorInfo conflict(HttpServletRequest req, DataIntegrityViolationException e) {
+        if (ValidationUtil.getRootCause(e).getMessage().contains("meal_unique_user_datetime_idx")) {
+            return logAndGetErrorInfo(
+                    req,
+                    e,
+                    true,
+                    VALIDATION_ERROR,
+                    messageSource.getMessage("validator.error.meal.datetime_duplicate", null, LocaleContextHolder.getLocale())
+            );
+        }
         return logAndGetErrorInfo(req, e, true, DATA_ERROR);
     }
 

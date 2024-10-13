@@ -6,6 +6,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.to.UserTo;
@@ -39,10 +40,16 @@ public class UserValidator implements Validator {
             userId = user.getId();
         }
         if (userId == null) {
-            userId = SecurityUtil.authUserId();
+            AuthorizedUser authorizedUser = SecurityUtil.safeGet();
+            if (authorizedUser != null) {
+                userId = SecurityUtil.authUserId();
+            }
         }
         if (email != null && repository.getByEmail(email) != null) {
-            final String emailCurrent = repository.get(userId).getEmail();
+            String emailCurrent = "";
+            if (userId != null) {
+                emailCurrent = repository.get(userId).getEmail();
+            }
             if (!emailCurrent.equals(email)) {
                 rejectValue(errors, "email", "validator.error.user.email_duplicate");
             }

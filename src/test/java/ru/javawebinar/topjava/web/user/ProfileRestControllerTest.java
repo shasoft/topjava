@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
@@ -111,7 +112,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @Transactional
+    @Transactional(propagation = Propagation.NEVER)
     void updateEmailDuplicate() throws Exception {
         UserTo updatedTo = new UserTo(null, "newName", admin.getEmail(), "newPassword", 1500);
         ResultActions action = perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)

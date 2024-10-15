@@ -21,11 +21,8 @@ public abstract class AbstractUserController {
     @Autowired
     private UserService service;
 
-    final UserValidator validator;
-
-    public AbstractUserController(UserValidator validator) {
-        this.validator = validator;
-    }
+    @Autowired
+    private UserValidator validator;
 
     @InitBinder
     protected void initBinder(WebDataBinder binder) {

@@ -18,10 +18,6 @@ import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 public class ProfileRestController extends AbstractUserController {
     static final String REST_URL = "/rest/profile";
 
-    public ProfileRestController(UserValidator validator) {
-        super(validator);
-    }
-
     @GetMapping
     public User get() {
         return super.get(authUserId());

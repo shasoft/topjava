@@ -13,10 +13,6 @@ import java.util.List;
 @RequestMapping(value = "/admin/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AdminUIController extends AbstractUserController {
 
-    public AdminUIController(UserValidator validator) {
-        super(validator);
-    }
-
     @Override
     @GetMapping
     public List<User> getAll() {

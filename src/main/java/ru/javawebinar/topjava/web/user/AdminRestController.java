@@ -17,10 +17,6 @@ public class AdminRestController extends AbstractUserController {
 
     static final String REST_URL = "/rest/admin/users";
 
-    public AdminRestController(UserValidator validator) {
-        super(validator);
-    }
-
     @Override
     @GetMapping
     public List<User> getAll() {

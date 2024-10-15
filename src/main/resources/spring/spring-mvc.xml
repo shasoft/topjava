@@ -72,11 +72,7 @@
 
     <mvc:interceptors>
         <bean class="ru.javawebinar.topjava.web.interceptor.ModelInterceptor"/>
-        <bean
-                class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">  <!-- (1) -->
-        </bean>
-        <bean
-                class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
             <property name="paramName" value="lang"/>  <!-- (2) -->
         </bean>
     </mvc:interceptors>
